@@ -2,7 +2,6 @@ public class Cliente extends Thread {
 
     private final int id;
     private final Barbearia barbearia;
-    // volatile garante que a mudança feita pelo Barbeiro seja visível para a thread do Cliente
     private volatile boolean atendido = false;
 
     public Cliente(int id, Barbearia barbearia) {
@@ -13,8 +12,7 @@ public class Cliente extends Thread {
     @Override
     public void run() {
         try {
-            // O cliente tenta entrar na barbearia para cortar o cabelo.
-            // Este método bloqueia a thread do cliente até o atendimento terminar.
+            // cliente tenta entrar na barbearia para cortar o cabelo.
             barbearia.clienteQuerCortar(this);
             
         } catch (InterruptedException e) {
