@@ -1,69 +1,63 @@
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random; 
+import java.util.ArrayList; 
+import java.util.List; 
 
-public class Simulacao {
+public class Simulacao { // classe que contém o método main para executar a simulação
 
-    public static void main(String[] args) {
-        // Define o número de cadeiras de espera na barbearia
-        int N_CADEIRAS = 3;
+    public static void main(String[] args) { 
+        int N_CADEIRAS = 3; // define quantas cadeiras de espera existem
         
-        Barbearia barbearia = new Barbearia(N_CADEIRAS);
+        Barbearia barbearia = new Barbearia(N_CADEIRAS); // cria a barbearia com N cadeiras
         
-        // Cria e inicia a thread do Barbeiro
-        Barbeiro barbeiro = new Barbeiro(barbearia);
-        barbeiro.start();
+        Barbeiro barbeiro = new Barbeiro(barbearia); // cria o barbeiro associado à barbearia
+        barbeiro.start(); // inicia a thread do barbeiro
 
-        // Gerador de clientes
-        int clienteId = 1;
-        Random rand = new Random();
+        int clienteId = 1; // contador para ids dos clientes
+        Random rand = new Random(); // gerador de números aleatórios para intervalos entre clientes
 
-        System.out.println("--- Barbearia aberta (N=" + N_CADEIRAS + ") ---");
+        System.out.println("--- Barbearia aberta (N=" + N_CADEIRAS + ") ---"); 
         
-        // Gerar clientes por um tempo limitado e depois fechar a barbearia
-        int DURACAO_MS = 20_000; // duração da simulação (ms)
-        long fim = System.currentTimeMillis() + DURACAO_MS;
+        // gera clientes por um tempo limitado e depois fechar a barbearia
+        int DURACAO_MS = 20_000; // duração total da geração de clientes em milissegundos
+        long fim = System.currentTimeMillis() + DURACAO_MS; 
 
-        List<Cliente> clientes = new ArrayList<>();
+        List<Cliente> clientes = new ArrayList<>(); // lista para armazenar referências aos clientes criados
 
-        while (System.currentTimeMillis() < fim) {
+        while (System.currentTimeMillis() < fim) { 
             try {
-                // Cria e inicia uma nova thread de Cliente
-                Cliente cliente = new Cliente(clienteId++, barbearia);
-                clientes.add(cliente);
-                cliente.start();
+                Cliente cliente = new Cliente(clienteId++, barbearia); // cria cliente com id crescente
+                clientes.add(cliente); // guarda referência para depois aguardar término
+                cliente.start(); // inicia a thread do cliente
 
-                // Aguarda um tempo aleatório antes de gerar o próximo cliente
-                int intervalo = rand.nextInt(1500) + 100; // 0.1 a 1.6 segundos
-                Thread.sleep(intervalo);
+                int intervalo = rand.nextInt(1500) + 100; // intervalo entre 100 e 1599 ms (~0.1 a 1.5s)
+                Thread.sleep(intervalo); // aguarda antes de criar o próximo cliente
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt();
-                break;
+            } catch (InterruptedException e) { // se a thread principal for interrompida
+                e.printStackTrace(); 
+                Thread.currentThread().interrupt(); 
+                break; // sai do loop de geração
             }
         }
 
-        System.out.println("--- Tempo esgotado: fechando a barbearia ---");
-        // Fecha a barbearia para novos clientes e acorda threads
-        barbearia.fecharBarbearia();
+        System.out.println("--- Tempo esgotado: fechando a barbearia ---"); 
+        barbearia.fecharBarbearia(); // sinaliza encerramento da barbearia
 
-        // Aguarda clientes terminarem (com timeout para não travar indefinidamente)
-        for (Cliente c : clientes) {
+        // aguarda clientes terminarem (com timeout para não travar indefinidamente)
+        for (Cliente c : clientes) { 
             try {
-                c.join(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                c.join(1000); // aguarda até 1s pela finalização de cada cliente
+            } catch (InterruptedException e) { 
+                Thread.currentThread().interrupt(); 
             }
         }
 
-        // Aguarda o barbeiro terminar
+        // aguarda o barbeiro terminar
         try {
-            barbeiro.join();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            barbeiro.join(); 
+        } catch (InterruptedException e) { 
+            Thread.currentThread().interrupt(); 
         }
 
-        System.out.println("--- Simulação encerrada ---");
+        System.out.println("--- Simulação encerrada ---"); 
     }
 }
