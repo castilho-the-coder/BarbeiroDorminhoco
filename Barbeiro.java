@@ -23,9 +23,9 @@ public class Barbeiro extends Thread {
                 }
 
                 // só atende o cliente se a barbearia ainda estiver aberta
-                if (!barbearia.isAberta()) {
-                    System.out.println("Barbeiro: Barbearia fechou. Não atendo mais clientes.");
-                    break;
+                if (!barbearia.isAberta()) { // verifica se a barbearia foi fechada após acordar
+                    System.out.println("Barbeiro: Barbearia fechou. Não atendo mais clientes."); // informa que não vai mais atender
+                    break; // sai do loop
                 }
 
                 // simula o tempo de corte 
