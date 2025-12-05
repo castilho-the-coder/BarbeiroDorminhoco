@@ -5,8 +5,8 @@ public class Cliente extends Thread {
     private volatile boolean atendido = false; // flag indicando se o cliente já foi atendido
 
     public Cliente(int id, Barbearia barbearia) { 
-        this.id = id; // atribui o id
-        this.barbearia = barbearia; // armazena a referência à barbearia
+        this.id = id; 
+        this.barbearia = barbearia; 
     }
 
     @Override

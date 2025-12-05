@@ -10,11 +10,11 @@ public class Barbeiro extends Thread {
     }
 
     @Override
-    public void run() { // método principal da thread do barbeiro
+    public void run() { 
         try {
             while (true) { // loop infinito: o barbeiro fica aguardando clientes até encerrar
                
-                Cliente cliente = barbearia.proximoClienteParaAtender(); // chama o próximo cliente 
+                Cliente cliente = barbearia.proximoClienteParaAtender(); 
 
                 // se retornou null, a barbearia foi fechada e não há mais clientes
                 if (cliente == null) { 
@@ -22,12 +22,17 @@ public class Barbeiro extends Thread {
                     break; 
                 }
 
+                // só atende o cliente se a barbearia ainda estiver aberta
+                if (!barbearia.isAberta()) {
+                    System.out.println("Barbeiro: Barbearia fechou. Não atendo mais clientes.");
+                    break;
+                }
+
                 // simula o tempo de corte 
                 int tempoCorte = rand.nextInt(3000) + 1000; 
                 System.out.println("Barbeiro: Cortando cabelo de " + cliente.getNome() + "..."); 
                 Thread.sleep(tempoCorte); 
 
-                // sinaliza o fim do corte 
                 barbearia.finalizarAtendimento(cliente); // notifica a barbearia que o cliente foi atendido
             }
         } catch (InterruptedException e) { // captura interrupção da thread
